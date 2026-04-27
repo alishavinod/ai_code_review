@@ -1,0 +1,46 @@
+{
+  "total_validated": 33,
+  "overall_agreement": 0.576,
+  "agreed": 19,
+  "disagreed": 14,
+  "per_label_agreement": {
+    "context-missing": {
+      "agreement": 0.4,
+      "total": 10
+    },
+    "trivial": {
+      "agreement": 0.7,
+      "total": 10
+    },
+    "incorrect": {
+      "agreement": 0.6,
+      "total": 10
+    },
+    "irrelevant": {
+      "agreement": 0.667,
+      "total": 3
+    }
+  },
+  "confusion_matrix": {
+    "trivial": {
+      "incorrect": 3,
+      "trivial": 7
+    },
+    "context-missing": {
+      "trivial": 4,
+      "context-missing": 4,
+      "irrelevant": 2
+    },
+    "incorrect": {
+      "context-missing": 1,
+      "incorrect": 6,
+      "trivial": 3
+    },
+    "irrelevant": {
+      "irrelevant": 2,
+      "trivial": 1
+    }
+  },
+  "cohen_kappa": 0.413,
+  "kappa_interpretation": "Moderate agreement"
+}

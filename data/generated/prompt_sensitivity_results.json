@@ -1,0 +1,125 @@
+{
+  "total_tested": 8,
+  "all_three_prompts_agree": 7,
+  "all_agree_rate": 0.875,
+  "v1_matches_original_label": 7,
+  "prompt_agreement_with_v1": {
+    "v2_developer_framing": 1.0,
+    "v3_numbered_list": 0.875
+  },
+  "results": [
+    {
+      "index": 186,
+      "original_label": "context-missing",
+      "labels": {
+        "v1_original": "context-missing",
+        "v2_developer_framing": "context-missing",
+        "v3_numbered_list": "context-missing"
+      },
+      "all_prompts_agree": true,
+      "agrees_with_original": true,
+      "unique_labels": [
+        "context-missing"
+      ]
+    },
+    {
+      "index": 253,
+      "original_label": "context-missing",
+      "labels": {
+        "v1_original": "incorrect",
+        "v2_developer_framing": "incorrect",
+        "v3_numbered_list": "incorrect"
+      },
+      "all_prompts_agree": true,
+      "agrees_with_original": false,
+      "unique_labels": [
+        "incorrect"
+      ]
+    },
+    {
+      "index": 194,
+      "original_label": "incorrect",
+      "labels": {
+        "v1_original": "incorrect",
+        "v2_developer_framing": "incorrect",
+        "v3_numbered_list": "incorrect"
+      },
+      "all_prompts_agree": true,
+      "agrees_with_original": true,
+      "unique_labels": [
+        "incorrect"
+      ]
+    },
+    {
+      "index": 171,
+      "original_label": "incorrect",
+      "labels": {
+        "v1_original": "incorrect",
+        "v2_developer_framing": "incorrect",
+        "v3_numbered_list": "incorrect"
+      },
+      "all_prompts_agree": true,
+      "agrees_with_original": true,
+      "unique_labels": [
+        "incorrect"
+      ]
+    },
+    {
+      "index": 138,
+      "original_label": "trivial",
+      "labels": {
+        "v1_original": "trivial",
+        "v2_developer_framing": "trivial",
+        "v3_numbered_list": "trivial"
+      },
+      "all_prompts_agree": true,
+      "agrees_with_original": true,
+      "unique_labels": [
+        "trivial"
+      ]
+    },
+    {
+      "index": 180,
+      "original_label": "trivial",
+      "labels": {
+        "v1_original": "trivial",
+        "v2_developer_framing": "trivial",
+        "v3_numbered_list": "trivial"
+      },
+      "all_prompts_agree": true,
+      "agrees_with_original": true,
+      "unique_labels": [
+        "trivial"
+      ]
+    },
+    {
+      "index": 43,
+      "original_label": "irrelevant",
+      "labels": {
+        "v1_original": "irrelevant",
+        "v2_developer_framing": "irrelevant",
+        "v3_numbered_list": "irrelevant"
+      },
+      "all_prompts_agree": true,
+      "agrees_with_original": true,
+      "unique_labels": [
+        "irrelevant"
+      ]
+    },
+    {
+      "index": 208,
+      "original_label": "irrelevant",
+      "labels": {
+        "v1_original": "irrelevant",
+        "v2_developer_framing": "irrelevant",
+        "v3_numbered_list": "trivial"
+      },
+      "all_prompts_agree": false,
+      "agrees_with_original": true,
+      "unique_labels": [
+        "trivial",
+        "irrelevant"
+      ]
+    }
+  ]
+}

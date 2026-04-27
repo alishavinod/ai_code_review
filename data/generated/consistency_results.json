@@ -1,0 +1,80 @@
+{
+  "total_tested": 8,
+  "consistent_both_runs": 8,
+  "consistency_rate": 1.0,
+  "matches_original_label_rate": 1.0,
+  "results": [
+    {
+      "index": 14,
+      "original_label": "context-missing",
+      "run1": "context-missing",
+      "run2": "context-missing",
+      "consistent": true,
+      "matches_original_run1": true,
+      "matches_original_run2": true
+    },
+    {
+      "index": 135,
+      "original_label": "context-missing",
+      "run1": "context-missing",
+      "run2": "context-missing",
+      "consistent": true,
+      "matches_original_run1": true,
+      "matches_original_run2": true
+    },
+    {
+      "index": 149,
+      "original_label": "incorrect",
+      "run1": "incorrect",
+      "run2": "incorrect",
+      "consistent": true,
+      "matches_original_run1": true,
+      "matches_original_run2": true
+    },
+    {
+      "index": 26,
+      "original_label": "incorrect",
+      "run1": "incorrect",
+      "run2": "incorrect",
+      "consistent": true,
+      "matches_original_run1": true,
+      "matches_original_run2": true
+    },
+    {
+      "index": 110,
+      "original_label": "trivial",
+      "run1": "trivial",
+      "run2": "trivial",
+      "consistent": true,
+      "matches_original_run1": true,
+      "matches_original_run2": true
+    },
+    {
+      "index": 295,
+      "original_label": "trivial",
+      "run1": "trivial",
+      "run2": "trivial",
+      "consistent": true,
+      "matches_original_run1": true,
+      "matches_original_run2": true
+    },
+    {
+      "index": 208,
+      "original_label": "irrelevant",
+      "run1": "irrelevant",
+      "run2": "irrelevant",
+      "consistent": true,
+      "matches_original_run1": true,
+      "matches_original_run2": true
+    },
+    {
+      "index": 43,
+      "original_label": "irrelevant",
+      "run1": "irrelevant",
+      "run2": "irrelevant",
+      "consistent": true,
+      "matches_original_run1": true,
+      "matches_original_run2": true
+    }
+  ]
+}

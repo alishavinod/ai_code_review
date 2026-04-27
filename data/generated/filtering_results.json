@@ -1,0 +1,96 @@
+{
+  "data_summary": {
+    "total": 300,
+    "total_valid": 65,
+    "total_noise": 235,
+    "noise_distribution": {
+      "valid": 65,
+      "context-missing": 77,
+      "incorrect": 97,
+      "trivial": 58,
+      "irrelevant": 3
+    },
+    "match_distribution": {
+      "valid": 65,
+      "uncertain": 52,
+      "unmatched": 183
+    }
+  },
+  "strategies": {
+    "baseline": {
+      "total_kept": 300,
+      "total_filtered": 0,
+      "tp": 65,
+      "fp": 235,
+      "fn": 0,
+      "tn": 0,
+      "precision": 0.217,
+      "recall": 1.0,
+      "f1": 0.356,
+      "noise_reduction": 0.0
+    },
+    "binary": {
+      "total_kept": 65,
+      "total_filtered": 235,
+      "tp": 65,
+      "fp": 0,
+      "fn": 0,
+      "tn": 235,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "noise_reduction": 1.0
+    },
+    "type_specific": {
+      "total_kept": 204,
+      "total_filtered": 96,
+      "tp": 65,
+      "fp": 139,
+      "fn": 0,
+      "tn": 96,
+      "precision": 0.319,
+      "recall": 1.0,
+      "f1": 0.483,
+      "noise_reduction": 0.409
+    }
+  },
+  "type_specific_detail": {
+    "per_category": {
+      "valid": {
+        "total": 65,
+        "kept": 65,
+        "filtered": 0,
+        "filter_rate": 0.0
+      },
+      "context-missing": {
+        "total": 77,
+        "kept": 77,
+        "filtered": 0,
+        "filter_rate": 0.0
+      },
+      "incorrect": {
+        "total": 97,
+        "kept": 44,
+        "filtered": 53,
+        "filter_rate": 0.546
+      },
+      "trivial": {
+        "total": 58,
+        "kept": 18,
+        "filtered": 40,
+        "filter_rate": 0.69
+      },
+      "irrelevant": {
+        "total": 3,
+        "kept": 0,
+        "filtered": 3,
+        "filter_rate": 1.0
+      }
+    },
+    "interventions": {
+      "trivial_filtered_by_heuristic": 40,
+      "incorrect_filtered_by_llm": 53,
+      "irrelevant_filtered_by_llm": 3
+    }
+  }
+}

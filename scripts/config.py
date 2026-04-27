@@ -1,0 +1,35 @@
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
+GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')
+ANTHROPIC_API_KEY = os.getenv('ANTHROPIC_API_KEY')
+
+GPT_MODEL = "gpt-4o-mini"
+GEMINI_MODEL = "gemini-2.0-flash-exp"
+CLAUDE_MODEL = "claude-3-5-haiku-latest"
+
+RAW_DATA_PATH = "data/raw"
+PROCESSED_DATA_PATH = "data/processed"
+RESULTS_PATH = "results"
+
+SAMPLE_SIZE = 50
+FULL_SIZE = 900
+VALIDATION_SIZE = 300
+MANUAL_VALIDATION_SIZE = 20
+
+NOISE_CATEGORIES = [
+    "VALID",
+    "TRIVIAL",
+    "INCORRECT",
+    "CONTEXT-MISSING",
+    "IRRELEVANT"
+]
+
+GPT_INPUT_COST = 0.150  
+GPT_OUTPUT_COST = 0.600
+GEMINI_COST = 0.0
+CLAUDE_INPUT_COST = 1.00
+CLAUDE_OUTPUT_COST = 5.00
