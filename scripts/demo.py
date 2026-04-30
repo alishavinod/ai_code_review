@@ -2,13 +2,13 @@
 demo_v2.py — AI Code Review Noise Filtering Pipeline Demo
 
 Explains the pipeline stages then runs 2 real examples live:
-  Example 1: Valid suggestion - KEPT   (AI catches real bug)
-  Example 2: Incorrect suggestion - FILTERED by LLM two-stage validation
+  Example 1: Valid suggestion     → KEPT   (AI catches real bug)
+  Example 2: Context-missing suggestion → KEPT with flag (AI missed compile error human caught)
 
 Usage:
   python demo_v2.py pipeline   # explain pipeline stages
-  python demo_v2.py 1          # Example 1: valid - kept
-  python demo_v2.py 2          # Example 2: incorrect - filtered
+  python demo_v2.py 1          # Example 1: valid -> kept
+  python demo_v2.py 2          # Example 2: incorrect -> filtered
   python demo_v2.py results    # results summary
   python demo_v2.py all        # full demo
 """
@@ -30,13 +30,16 @@ BOLD   = "\033[1m"
 DIM    = "\033[2m"
 RESET  = "\033[0m"
 
+def divider():
+    print(f"\n{DIM}{'─' * 60}{RESET}\n")
+
 def header(text):
     print(f"\n{BOLD}{BLUE}{'═' * 60}{RESET}")
     print(f"{BOLD}{BLUE}  {text}{RESET}")
     print(f"{BOLD}{BLUE}{'═' * 60}{RESET}\n")
 
 def step(n, total, text):
-    print(f"\n{BOLD}{CYAN} Step {n}/{total}: {text}{RESET}")
+    print(f"\n{BOLD}{CYAN}  ▶ Step {n}/{total}: {text}{RESET}")
 
 def wait(msg):
     print(f"\n  {DIM}⟳  {msg}...{RESET}", end="", flush=True)
@@ -63,10 +66,10 @@ def show_pipeline():
             "3. Noise Classification",
             "For unmatched suggestions, classify why they missed.",
             "Labels:\n"
-            "incorrect       — AI is factually wrong given the diff\n"
-            "trivial         — style/naming with no functional impact\n"
-            "context-missing — valid but needs broader codebase knowledge\n"
-            "irrelevant      — unrelated to the change shown"
+            "       • incorrect       — AI is factually wrong given the diff\n"
+            "       • trivial         — style/naming with no functional impact\n"
+            "       • context-missing — valid but needs broader codebase knowledge\n"
+            "       • irrelevant      — unrelated to the change shown"
         ),
         (
             "4. Validation (LLM-as-Judge)",
@@ -76,10 +79,10 @@ def show_pipeline():
         (
             "5. Type-Specific Filtering",
             "Different intervention per noise type — not one-size-fits-all.",
-            "incorrect       - Two-stage LLM validation\n"
-            "trivial         - Keyword heuristic (simulates linter)\n"
-            "irrelevant      - LLM scope check\n"
-            "context-missing - Keep with flag"
+            "• incorrect       → Two-stage LLM validation  (BitsAI-CR style)\n"
+            "       • trivial         → Keyword heuristic         (simulates linter)\n"
+            "       • irrelevant      → LLM scope check\n"
+            "       • context-missing → Keep with flag             (needs RAG)"
         ),
     ]
     for name, desc, detail in stages:
@@ -94,7 +97,7 @@ def show_pipeline():
 EXAMPLES = {
     1: {
         "title": "Example 1 — Valid Suggestion (C++)",
-        "subtitle": "AI catches a real bug - pipeline keeps it",
+        "subtitle": "AI catches a real bug → pipeline keeps it",
         "context": (
             "Developer migrated from StringFormat() to fmt::format() "
             "but kept the old '%u' format specifiers, which are invalid for fmt."
@@ -122,34 +125,37 @@ EXAMPLES = {
         ),
     },
     2: {
-        "title": "Example 2 — Incorrect Suggestion (C)",
-        "subtitle": "AI comments on deleted code - two-stage validation filters it",
+        "title": "Example 2 — Context-Missing Suggestion (C#)",
+        "subtitle": "AI misses a compile error the human caught → kept with flag",
         "context": (
-            "Developer removed the else-branch warning that fired when "
-            "cursor_pos was NULL. The warning is gone in the AFTER version."
+            "Developer added a new 'requestId' parameter to an existing method. "
+            "The new signature conflicts with an existing overload — ambiguous method call."
         ),
         "old_code": (
-            "static void bucketing_cursor_w_pos_delete(...) {\n"
-            "    if (cursor_pos != NULL) {\n"
-            "        list_cursor_destroy(cursor_pos->lc);\n"
-            "        free(cursor_pos);\n"
-            "    } else\n"
-            "        warn(D_BUCKETING, \"ignoring null pointer\");\n"
+            "public ReturnType SendLaunchRequest(\n"
+            "    AppControl ctrl,\n"
+            "    AppControlReplyCallback cb)\n"
+            "{\n"
+            "    // existing implementation\n"
             "}"
         ),
         "new_code": (
-            "static void bucketing_cursor_w_pos_delete(...) {\n"
-            "    if (cursor_pos != NULL) {\n"
-            "        list_cursor_destroy(cursor_pos->lc);\n"
-            "        free(cursor_pos);\n"
-            "    }\n"
+            "public ReturnType SendLaunchRequest(\n"
+            "    AppControl ctrl,\n"
+            "    uint requestId,\n"
+            "    AppControlReplyCallback cb)\n"
+            "{\n"
+            "    // new implementation\n"
             "}"
         ),
-        "human_review": "Remove these warnings.",
+        "human_review": (
+            "This new overload conflicts with the existing signature "
+            "and will cause an ambiguous method call."
+        ),
         "ai_suggestion": (
-            "Add a null pointer check before dereferencing cursor_pos. "
-            "Currently, if cursor_pos is NULL, the code will crash when "
-            "calling list_cursor_destroy(cursor_pos->lc)."
+            "Verify that all callers of SendLaunchRequest have been updated "
+            "to pass the new requestId parameter, as this is a breaking change "
+            "for all existing call sites."
         ),
     },
 }
@@ -160,10 +166,9 @@ You are evaluating whether an AI code review suggestion addresses the same issue
 Human review: {human_review}
 AI suggestion: {ai_suggestion}
 
-The AI suggestion matches ONLY if it identifies the SAME problem and recommends 
-the SAME type of action as the human reviewer.
-If the human says to REMOVE something and the AI says to ADD something, 
-that is NOT a match — label it unmatched.
+The AI suggestion matches ONLY if it identifies the SAME problem and recommends the SAME type of action.
+If the human identifies a compile error and the AI talks about updating callers, that is NOT a match.
+If the human says to REMOVE something and the AI says to ADD something, that is NOT a match.
 
 Does the AI suggestion address the same concern as the human review?
 Answer with exactly one word: valid, unmatched, or uncertain."""
@@ -261,14 +266,14 @@ def run_example(client, ex):
     print(f"\n    Result: {c}{BOLD}{match.upper()}{RESET}")
 
     if match == "valid":
-        print(f"\n    {GREEN}AI addressed the same issue as the human reviewer.{RESET}")
+        print(f"\n    {GREEN}✓ AI addressed the same issue as the human reviewer.{RESET}")
         step(5, 5, "Type-specific filtering")
         print(f"\n    Noise type : {GREEN}{BOLD}VALID{RESET}")
         print(f"    Intervention: None — always keep valid suggestions")
-        print(f"\n    {GREEN}{BOLD}KEPT — Valid suggestion reaches the developer.{RESET}\n")
+        print(f"\n    {GREEN}{BOLD}✓ KEPT — Valid suggestion reaches the developer.{RESET}\n")
         return
 
-    print(f"\n    {RED}AI missed the point. Classifying noise type...{RESET}")
+    print(f"\n    {RED}✗ AI missed the point. Classifying noise type...{RESET}")
 
     step(5, 5, "Noise classification + Type-specific filtering")
     wait("Classifying noise type")
@@ -291,10 +296,10 @@ def run_example(client, ex):
         print(f"    Scanning for style/naming keywords...")
         if kw:
             print(f"    Found: {YELLOW}{kw}{RESET}")
-            print(f"\n    {RED}{BOLD}FILTERED — Style suggestion a linter would catch.{RESET}\n")
+            print(f"\n    {RED}{BOLD}✗ FILTERED — Style suggestion a linter would catch.{RESET}\n")
         else:
             print(f"    No trivial keywords found.")
-            print(f"\n    {GREEN}{BOLD}KEPT — Passes heuristic.{RESET}\n")
+            print(f"\n    {GREEN}{BOLD}✓ KEPT — Passes heuristic.{RESET}\n")
 
     elif noise == "incorrect":
         print(f"    {BOLD}Intervention: Two-stage LLM validation{RESET}")
@@ -310,9 +315,9 @@ def run_example(client, ex):
         ac = GREEN if correct else RED
         print(f"    Validator: {ac}{BOLD}{raw.upper()}{RESET}")
         if correct:
-            print(f"\n    {GREEN}{BOLD}KEPT — Validator confirmed suggestion is correct.{RESET}\n")
+            print(f"\n    {GREEN}{BOLD}✓ KEPT — Validator confirmed suggestion is correct.{RESET}\n")
         else:
-            print(f"\n    {RED}{BOLD}FILTERED — Factually wrong given the diff. Removed.{RESET}\n")
+            print(f"\n    {RED}{BOLD}✗ FILTERED — Factually wrong given the diff. Removed.{RESET}\n")
 
     elif noise == "irrelevant":
         print(f"    {BOLD}Intervention: LLM scope check{RESET}")
@@ -327,9 +332,9 @@ def run_example(client, ex):
         ac = GREEN if relevant else RED
         print(f"    Scope check: {ac}{BOLD}{raw.upper()}{RESET}")
         if relevant:
-            print(f"\n    {GREEN}{BOLD}KEPT — Passes scope check.{RESET}\n")
+            print(f"\n    {GREEN}{BOLD}✓ KEPT — Passes scope check.{RESET}\n")
         else:
-            print(f"\n    {RED}{BOLD}FILTERED — Out of scope for this change.{RESET}\n")
+            print(f"\n    {RED}{BOLD}✗ FILTERED — Out of scope for this change.{RESET}\n")
 
     elif noise == "context-missing":
         print(f"    {BOLD}Intervention: Keep with flag{RESET}")
@@ -374,10 +379,10 @@ def show_results():
 
     print(f"  {BOLD}Per-Intervention Effectiveness{RESET}")
     for name, frac, pct, c in [
-        ("irrelevant - scope check",    "3/3",   "100%", GREEN),
-        ("incorrect - LLM validation", "53/97",   "55%", YELLOW),
-        ("trivial - keyword heuristic","40/58",   "69%", YELLOW),
-        ("context-missing - kept",      "0/77",    "0%", DIM),
+        ("irrelevant → scope check",    "3/3",   "100%", GREEN),
+        ("incorrect → LLM validation", "53/97",   "55%", YELLOW),
+        ("trivial → keyword heuristic","40/58",   "69%", YELLOW),
+        ("context-missing → kept",      "0/77",    "0%", DIM),
     ]:
         print(f"  {name:<35} {frac:>7}  {c}{pct}{RESET}")
     print()
@@ -390,8 +395,8 @@ def main():
     if len(sys.argv) < 2:
         print(f"\n{BOLD}Usage:{RESET}")
         print("  python demo_v2.py pipeline  — explain pipeline")
-        print("  python demo_v2.py 1         — Example 1: valid - kept")
-        print("  python demo_v2.py 2         — Example 2: incorrect - filtered")
+        print("  python demo_v2.py 1         — Example 1: valid → kept")
+        print("  python demo_v2.py 2         — Example 2: incorrect → filtered")
         print("  python demo_v2.py results   — results summary")
         print("  python demo_v2.py all       — full demo")
         sys.exit(0)
@@ -411,11 +416,11 @@ def main():
         run_example(client, EXAMPLES[2])
     elif arg == "all":
         show_pipeline()
-        input(f"\n{BOLD}  Press Enter to run Example 1{RESET}")
+        input(f"\n{BOLD}  Press Enter to run Example 1...{RESET}")
         run_example(client, EXAMPLES[1])
-        input(f"\n{BOLD}  Press Enter to run Example 2{RESET}")
+        input(f"\n{BOLD}  Press Enter to run Example 2...{RESET}")
         run_example(client, EXAMPLES[2])
-        input(f"\n{BOLD}  Press Enter for results{RESET}")
+        input(f"\n{BOLD}  Press Enter for results...{RESET}")
         show_results()
     else:
         print(f"Unknown: {arg}"); sys.exit(1)
