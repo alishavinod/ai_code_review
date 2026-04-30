@@ -1,0 +1,84 @@
+{
+  "data_summary": {
+    "total": 300,
+    "noise_distribution": {
+      "valid": 65,
+      "context-missing": 77,
+      "incorrect": 97, 
+      "trivial": 58,
+      "irrelevant": 3
+    },
+    "match_distribution": {
+      "valid": 65,
+      "uncertain": 52,
+      "unmatched": 183
+    }
+  },
+  "ablation_results": {
+    "Baseline": {
+      "kept": 300,
+      "filtered": 0,
+      "tp": 65,
+      "fp": 235,
+      "fn": 0,
+      "tn": 0,
+      "precision": 0.217,
+      "noise_reduction": 0.0,
+      "filtered_by_category": {}
+    },
+    "Heuristic only": {
+      "kept": 260,
+      "filtered": 40,
+      "tp": 65,
+      "fp": 195,
+      "fn": 0,
+      "tn": 40,
+      "precision": 0.25,
+      "noise_reduction": 0.17,
+      "filtered_by_category": {
+        "trivial": 40
+      }
+    },
+    "Validator only": {
+      "kept": 246,
+      "filtered": 54,
+      "tp": 65,
+      "fp": 181,
+      "fn": 0,
+      "tn": 54,
+      "precision": 0.264,
+      "noise_reduction": 0.23,
+      "filtered_by_category": {
+        "incorrect": 54
+      }
+    },
+    "Relevance only": {
+      "kept": 297,
+      "filtered": 3,
+      "tp": 65,
+      "fp": 232,
+      "fn": 0,
+      "tn": 3,
+      "precision": 0.219,
+      "noise_reduction": 0.013,
+      "filtered_by_category": {
+        "irrelevant": 3
+      }
+    },
+    "All three (full)": {
+      "kept": 205,
+      "filtered": 95,
+      "tp": 65,
+      "fp": 140,
+      "fn": 0,
+      "tn": 95,
+      "precision": 0.317,
+      "noise_reduction": 0.404,
+      "filtered_by_category": {
+        "trivial": 40,
+        "incorrect": 52,
+        "irrelevant": 3
+      }
+    }
+  }
+}
